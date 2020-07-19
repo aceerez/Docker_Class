@@ -26,6 +26,7 @@ pipeline {
 		  }
 		  stage('Build a docker image for all') {
 		   when { expression {return (params.Language == 'All') }
+		   }
          steps {
             echo 'Build process for all ..'            
             sh '''
@@ -34,7 +35,7 @@ pipeline {
             '''
          }
       }
-	  }
+	  
 	  stage('Build a docker image for Python') {
        when { expression {return (params.Language == 'Python') }
 	   }
