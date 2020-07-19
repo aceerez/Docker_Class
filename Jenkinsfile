@@ -25,7 +25,7 @@ pipeline {
 			 }
 		  }
 		  stage('Build a docker image for all') {
-		   when { expression {return (params.Language == 'All') }
+		   when { expression {return (params.Language == 'all') }
 		   }
          steps {
             echo 'Build process for all ..'            
@@ -37,7 +37,7 @@ pipeline {
       }
 	  
 	  stage('Build a docker image for Python') {
-       when { expression {return (params.Language == 'Python') }
+       when { expression {return (params.Language == 'python') }
 	   }
 	   steps {
 		    echo 'Build process for Python ..'            
@@ -50,7 +50,7 @@ pipeline {
          }
       
       stage('Build a docker image for C') {
-	      when { expression {return (params.Language == 'C') }
+	      when { expression {return (params.Language == 'c') }
 	   }
          steps {
            echo 'Build process for C ..'            
@@ -61,7 +61,7 @@ pipeline {
          }
       }
       stage('Build a docker image for Bash') {
-	      when { expression {return (params.Language == 'Bash') }
+	      when { expression {return (params.Language == 'bash') }
 	   }
          steps {
             echo 'Build process for C ..'            
