@@ -1,85 +1,91 @@
 pipeline {
   agent { node { label 'slave01' } }
 
-   stages {
+   environment {	
+		IMAGE_NAME="${Language}"
+		REPO_NAME="${DOCKER_HUB_NAME}/${IMAGE_NAME}"   
+		USER=credentials('DOCKERHUB_USER')
+		PASS=credentials('DOCKERHUB_PASSWORD')	
+	}   
+
+    stages {
       stage('Clone Sources') {
         steps {
           checkout scm
         } 
       }
-     stage('Selected language') {
+	  stage('Checking environment') {
          steps {
-            echo "You choose to code in ${Language}"
+            sh 'printenv'
          }
       }
+		 stage('Selected language') {
+			 steps {
+				echo "You choose to code in ${Language}"
+			 }
+		  }
+		  stage('Build a docker image for all') {
+		   when { expression {return (params.Language == 'All') }
+         steps {
+            echo 'Build process for all ..'            
+            sh '''
+                cd docker
+                docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_all .
+            '''
+         }
+      }
+		  
 	  
-	   stage('assigning permissions !') {
-		   steps {
-			   echo 'permissions process..' 
-			   sh '''
-			   cd ${WORKSPACE}/scripts/
-			   chmod -R 755 ./
-			   '''
-		   }
-	   }      
-	  stage('Python') {
-       when { expression {return (params.Language == 'Python' || params.Language == 'All') }
+	  stage('Build a docker image for Python') {
+       when { expression {return (params.Language == 'Python') }
 	   }
 	   steps {
-		    sh ''' echo "running python3 code" 
-              cd ${WORKSPACE}/scripts
-              ./python_script.py 
-	      '''
+		    echo 'Build process for Python ..'            
+            sh '''
+                cd docker
+                docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_Python .
+            '''
 	   }
 		 
          }
       
-      stage('C') {
-	      when { expression {return (params.Language == 'C' || params.Language == 'All') }
+      stage('Build a docker image for C') {
+	      when { expression {return (params.Language == 'C') }
 	   }
          steps {
-             sh ''' echo "running C code\n printing the ABC:\n"
-	     cd ${WORKSPACE}/scripts
-              gcc C_script.c -o runC.exe
-	      ./runC.exe
-	      '''
+           echo 'Build process for C ..'            
+            sh '''
+                cd docker
+                docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_C .
+            '''
          }
       }
-      stage('Bash') {
-	      when { expression {return (params.Language == 'Bash' || params.Language == 'All') }
+      stage('Build a docker image for Bash') {
+	      when { expression {return (params.Language == 'Bash') }
 	   }
          steps {
-            sh ''' echo "running bash code" 
-              cd ${WORKSPACE}/scripts
-              ./bash_script.sh 
-	      '''
+            echo 'Build process for C ..'            
+            sh '''
+                cd docker
+                docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_Bash .
+            '''
          }
       }
-      stage('Java') {
-	      when { expression {return (params.Language == 'Java' || params.Language == 'All') }
-	   }
-	      steps {
-		      sh ''' echo "running java code" 
-              cd ${WORKSPACE}/scripts
-              javac Fibonacci.java
-	      java Fibonacci	      
-	     '''
-            }
-        }
-    
-
-
-      
-      stage('Ruby') {
-	      when { expression {return (params.Language == 'Ruby' || params.Language == 'All') }
-	   }
+	  stage('Push a docker image') {
          steps {
-            sh ''' echo "running Ruby code" 
-              cd ${WORKSPACE}/scripts
-               ruby ruby_script.rb
-	      '''
+			sh '''
+				echo "Login to Docker Hub"
+				docker login -u ${USER} -p ${PASS} 
+				docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${REPO_NAME}:${BUILD_NUMBER}
+				docker push ${REPO_NAME}:${BUILD_NUMBER}
+				echo "Pushing the latest version of the image"
+				docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${REPO_NAME}:latest
+				docker push ${REPO_NAME}:latest
+			'''
          }
       }
+	  
+	  
 	      stage('Saving Log') {
          steps {
 		 echo 'Saving LOG Results ..'
@@ -100,5 +106,6 @@ pipeline {
       
           
    
+  }
   }
   }
