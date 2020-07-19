@@ -1,0 +1,10 @@
+FROM ubuntu
+
+RUN apt update
+RUN apt install python -y
+WORKDIR scripts
+
+
+COPY scripts/checkUserName.py .
+
+ENTRYPOINT ["python", "./checkUserName.py"]
