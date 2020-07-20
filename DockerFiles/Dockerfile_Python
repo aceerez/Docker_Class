@@ -5,6 +5,6 @@ RUN apt install python -y
 WORKDIR container_scripts
 
 
-COPY scripts/checkUserName.py .
+COPY ./scripts/checkUserName.py .
 
 ENTRYPOINT ["python", "./checkUserName.py"]
