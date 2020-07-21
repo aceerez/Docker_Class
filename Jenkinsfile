@@ -3,7 +3,7 @@ pipeline {
 
    environment {	
 		IMAGE_NAME="${Language}"
-		REPO_NAME="${DOCKER_HUB_NAME}/${IMAGE_NAME}"   
+		REPO_NAME="${REPO_NAME}/${IMAGE_NAME}"   
 		USER=credentials('DOCKERHUB_USER')
 		PASS=credentials('DOCKERHUB_PASSWORD')	
 	}   
