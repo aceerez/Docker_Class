@@ -10,8 +10,8 @@ user2 = "Jill"
 
 #control that the user belongs to the list of allowed users
 if username == user1:
-    print "Access granted"
+    print (" Access granted")
 elif username == user2:
-    print "Welcome to the system"
+    print ("Welcome to the system")
 else:
-    print "Access denied"
+    print ("Hello", username," Access denied")
