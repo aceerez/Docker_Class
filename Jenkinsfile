@@ -3,7 +3,7 @@ pipeline {
 
    environment {	
 		IMAGE_NAME="${Language}"
-		REPO_NAME="${REPO_NAME}/${IMAGE_NAME}"   
+		REPO_NAME="${DOCKER_HUB_NAME}/${IMAGE_NAME}"   
 		USER=credentials('DOCKERHUB_USER')
 		PASS=credentials('DOCKERHUB_PASSWORD')	
 	}   
@@ -25,24 +25,24 @@ pipeline {
 			 }
 		  }
 		  stage('Build a docker image for all') {
-		   when { expression {return (params.Language == 'all') }
+		   when { expression {return (params.Language == 'All') }
 		   }
          steps {
             echo 'Build process for all ..'            
             sh '''
-                cd DockerFiles
+                cd docker
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_all .
             '''
          }
       }
 	  
 	  stage('Build a docker image for Python') {
-       when { expression {return (params.Language == 'python') }
+       when { expression {return (params.Language == 'Python') }
 	   }
 	   steps {
 		    echo 'Build process for Python ..'            
             sh '''
-                cd DockerFiles
+                cd docker
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_Python .
             '''
 	   }
@@ -50,23 +50,23 @@ pipeline {
          }
       
       stage('Build a docker image for C') {
-	      when { expression {return (params.Language == 'c') }
+	      when { expression {return (params.Language == 'C') }
 	   }
          steps {
            echo 'Build process for C ..'            
             sh '''
-                cd DockerFiles
+                cd docker
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_C .
             '''
          }
       }
       stage('Build a docker image for Bash') {
-	      when { expression {return (params.Language == 'bash') }
+	      when { expression {return (params.Language == 'Bash') }
 	   }
          steps {
             echo 'Build process for C ..'            
             sh '''
-                cd DockerFiles
+                cd docker
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_Bash .
             '''
          }
@@ -82,6 +82,16 @@ pipeline {
 				docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${REPO_NAME}:latest
 				docker push ${REPO_NAME}:latest
 			'''
+         }
+      
+	  stage('Running Code') {
+         steps {
+            echo 'Deploy process..'
+			sh '''		
+				echo "Running a new container"
+				docker run ${REPO_NAME}:${BUILD_NUMBER} "${NAME}"
+				
+				'''
          }
       }
 	  
