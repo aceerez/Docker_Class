@@ -5,6 +5,6 @@ RUN apt update
 WORKDIR scripts
 
 
-COPY scripts/reverse.sh
+COPY scripts/reverse.sh .
 
-ENTRYPOINT ["python", "./reverse.sh"]
+ENTRYPOINT ["bash", "./reverse.sh"]
