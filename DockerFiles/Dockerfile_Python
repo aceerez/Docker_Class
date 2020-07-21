@@ -2,6 +2,9 @@ FROM ubuntu
 
 RUN apt update
 RUN apt install python -y
+
 WORKDIR container_scripts
 
-COPY scriptest .
+COPY scripts/checkUserName.py .
+
+ENTRYPOINT ["python", "./checkUserName.py"]
