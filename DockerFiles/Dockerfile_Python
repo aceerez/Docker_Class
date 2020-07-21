@@ -4,4 +4,4 @@ RUN apt update
 RUN apt install python -y
 WORKDIR container_scripts
 
-CMD ls 
+COPY scripts/checkUserName.py .
