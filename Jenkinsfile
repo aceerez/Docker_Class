@@ -83,7 +83,7 @@ pipeline {
 				docker push ${REPO_NAME}:latest
 			'''
          }
-      
+      }
 	  stage('Running Code') {
          steps {
             echo 'Deploy process..'
