@@ -3,7 +3,7 @@ pipeline {
 
    environment {	
 		IMAGE_NAME="${Language}"
-		REPO_NAME="${DOCKER_HUB_NAME}/${IMAGE_NAME}"   
+		REPO_NAME="${REPO_NAME}/${IMAGE_NAME}"   
 		USER=credentials('DOCKERHUB_USER')
 		PASS=credentials('DOCKERHUB_PASSWORD')	
 	}   
@@ -30,7 +30,7 @@ pipeline {
          steps {
             echo 'Build process for all ..'            
             sh '''
-                cd docker
+                cd DockerFiles
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_all .
             '''
          }
@@ -42,7 +42,7 @@ pipeline {
 	   steps {
 		    echo 'Build process for Python ..'            
             sh '''
-                cd docker
+                cd DockerFiles
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_Python .
             '''
 	   }
@@ -55,7 +55,7 @@ pipeline {
          steps {
            echo 'Build process for C ..'            
             sh '''
-                cd docker
+                cd DockerFiles
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_C .
             '''
          }
@@ -66,7 +66,7 @@ pipeline {
          steps {
             echo 'Build process for C ..'            
             sh '''
-                cd docker
+                cd DockerFiles
                 docker build -t="${IMAGE_NAME}:${BUILD_NUMBER}" -f Dockerfile_Bash .
             '''
          }
